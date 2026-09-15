@@ -7,3 +7,5 @@ router.log
 router.pid
 discovered-free-models.json
 node_modules/
+router.launchd.log
+.env.bak

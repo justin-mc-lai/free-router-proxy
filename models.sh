@@ -14,9 +14,12 @@ load_env() {
   local file="$1"
   [ -f "$file" ] || return 0
   set -a
+  set +e +u
   # shellcheck disable=SC1090
-  source "$file"
+  source "$file" >/dev/null 2>&1 || true
+  set -e -u
   set +a
+  return 0
 }
 
 load_env "${HOME}/.hermes/.env"

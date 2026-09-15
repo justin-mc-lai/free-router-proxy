@@ -5,7 +5,9 @@
   "catalogRefreshMs": 900000,
   "redactSecrets": true,
   "socksFirstHosts": [
-    "generativelanguage.googleapis.com"
+    "generativelanguage.googleapis.com",
+    "api.b.ai",
+    "api.tokenrouter.com"
   ],
   "defaultProvider": "openrouter",
   "ui": {
@@ -62,6 +64,50 @@
         "qwen3.8-flash",
         "hy3",
         "mimo-v2.5"
+      ]
+    },
+    "xkiro": {
+      "catalog": true,
+      "pricing": false,
+      "baseUrl": "https://api.xkiro.com/v1",
+      "keyEnv": "XKIRO_API_KEY",
+      "freeModels": [
+        "minimax/minimax-m2.1-highspeed:free",
+        "minimax/minimax-m2.1:free",
+        "minimax/minimax-m2.5-highspeed:free",
+        "minimax/minimax-m2.5:free",
+        "minimax/minimax-m2.7-highspeed:free",
+        "minimax/minimax-m2.7:free",
+        "minimax/minimax-m2:free",
+        "minimax/minimax-m3:free",
+        "mistralai/codestral-2508",
+        "mistralai/devstral-medium",
+        "mistralai/ministral-14b",
+        "mistralai/ministral-3b",
+        "mistralai/ministral-8b",
+        "mistralai/mistral-large-2512",
+        "mistralai/mistral-medium-3.5",
+        "mistralai/mistral-small-2603",
+        "openai/gpt-5.3-codex-spark",
+        "qwen/qwen-plus-2025-07-28:free",
+        "qwen/qwen3-coder-plus:free",
+        "qwen/qwen3-max:free",
+        "qwen/qwen3-omni-flash:free",
+        "qwen/qwen3-vl-plus:free",
+        "qwen/qwen3.5-397b-a17b:free",
+        "qwen/qwen3.5-flash:free",
+        "qwen/qwen3.5-omni-flash:free",
+        "qwen/qwen3.5-omni-plus:free",
+        "qwen/qwen3.5-plus:free",
+        "qwen/qwen3.6-27b:free",
+        "qwen/qwen3.6-35b-a3b:free",
+        "qwen/qwen3.6-max-preview:free",
+        "qwen/qwen3.6-plus:free",
+        "qwen/qwen3.7-max:free",
+        "qwen/qwen3.7-plus:free",
+        "qwen/qwen3.8-max:free",
+        "sensenova/sensenova-6.7-flash-lite",
+        "sensenova/sensenova-6.8-flash-lite"
       ]
     }
   },
@@ -177,7 +223,151 @@
       "nvidia/nemotron-3-super-120b-a12b:free",
       "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
       "dots-studio/dots-3-note-preview:free",
-      "liquid/lfm-2.5-2.6b:free"
+      "liquid/lfm-2.5-2.6b:free",
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.1-highspeed:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.1:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.5-highspeed:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.5:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.7-highspeed:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2.7:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m2:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "minimax/minimax-m3:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/codestral-2508"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/devstral-medium"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/ministral-14b"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/ministral-3b"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/ministral-8b"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/mistral-large-2512"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/mistral-medium-3.5"
+      },
+      {
+        "provider": "xkiro",
+        "model": "mistralai/mistral-small-2603"
+      },
+      {
+        "provider": "xkiro",
+        "model": "openai/gpt-5.3-codex-spark"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen-plus-2025-07-28:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3-coder-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3-max:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3-omni-flash:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3-vl-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.5-397b-a17b:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.5-flash:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.5-omni-flash:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.5-omni-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.5-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.6-27b:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.6-35b-a3b:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.6-max-preview:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.6-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.7-max:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.7-plus:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "qwen/qwen3.8-max:free"
+      },
+      {
+        "provider": "xkiro",
+        "model": "sensenova/sensenova-6.7-flash-lite"
+      },
+      {
+        "provider": "xkiro",
+        "model": "sensenova/sensenova-6.8-flash-lite"
+      }
     ]
   }
 }
