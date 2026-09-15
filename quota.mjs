@@ -128,6 +128,18 @@ export function permanentRejection(status, payload) {
   if (status === 400 && /only supports .*Interactions API/i.test(message)) {
     return 'not a chat-completions model';
   }
+  // A 403 that says "you must pay for this model" is a permanent statement
+  // about this account, not a transient failure. Providers such as xKiro word
+  // it freely ("premium model", "pay-as-you-go", "top up your wallet"), so
+  // match the intent rather than one exact string. Without this the free-tier
+  // probe has no reason to stop asking and re-probes the same batch forever.
+  if (status === 403) {
+    const paidOnly =
+      /(?:paid plan|paying customers|paid model|pay-?as-?you-?go|premium model|deposited balance|top up your wallet|upgrade your plan)/i.test(
+        message,
+      );
+    if (paidOnly) return 'paid-only model on this account';
+  }
   return '';
 }
 
