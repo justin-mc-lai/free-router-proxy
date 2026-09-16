@@ -44,6 +44,17 @@ export function supportsRequest(model, needs) {
   return true;
 }
 
+// A model cannot serve a request that does not fit its window, and the window
+// holds the input and the requested output together -- providers reject the
+// sum, not the input alone. Only a published size is trusted: an unknown one
+// must never drop a candidate that might have worked.
+export function fitsContext(model, needs) {
+  const limit = Number(model?.context_length);
+  const needed = Number(needs?.estimatedTokens);
+  if (!(limit > 0) || !(needed > 0)) return true;
+  return needed <= limit;
+}
+
 // Google's native /v1beta/models speaks a different dialect than the
 // OpenAI-compatible listing: models[] keyed by `name`, capabilities in
 // `supportedGenerationMethods`, and no pricing at all. Normalizing here keeps

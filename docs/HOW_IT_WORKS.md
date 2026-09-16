@@ -564,7 +564,10 @@ journalctl --user -u free-router-proxy -f
 6. Removes catalog models that are no longer free, available, or text-chat compatible
    from effective routes.
 7. Removes models missing capabilities required by the request, such as tools
-   or image input.
+   or image input, and models whose published context window cannot hold the
+   request. The window takes the input and the requested output together, since
+   that is the sum providers reject on; a model with no published size, or a
+   request carrying inline images or video, is never removed on this ground.
 8. Tries remaining candidates in that unified order.
 9. Applies per-provider/model/key cooldowns after rate limits, timeouts, server failures, and empty
    successful responses. A `401` retires only that key; other keys keep serving.

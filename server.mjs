@@ -20,6 +20,7 @@ import {
 } from './config.mjs';
 import {
   createProviderRegistry,
+  fitsContext,
   isChatModel,
   isZeroCost,
   normalizeModelSlug,
@@ -1284,6 +1285,28 @@ function scheduleNextDiscovery() {
 
 loadDiscoveryState();
 
+// The window holds the input and the output the caller asked for, so the
+// requested output has to be counted against it too.
+function requestedOutputTokens(body) {
+  for (const value of [body.max_completion_tokens, body.max_tokens, body.max_output_tokens]) {
+    const tokens = Number(value);
+    if (Number.isFinite(tokens) && tokens > 0) return tokens;
+  }
+  return 0;
+}
+
+// Wide scripts (CJK et al) run close to one token per character where latin
+// averages about four, so they are counted apart rather than letting a mostly
+// Chinese prompt slip past the check. ponytail: a heuristic, not a tokenizer --
+// it only ever skips a candidate that clearly cannot fit, and undercounting
+// costs an extra upstream attempt rather than a wrong answer.
+const WIDE_CHAR = /[\u2e80-\u9fff\uf900-\ufaff\uff00-\uffef]/g;
+
+function estimateTokens(text) {
+  const wide = (text.match(WIDE_CHAR) || []).length;
+  return Math.ceil(wide + (text.length - wide) / 4);
+}
+
 function requestNeeds(body) {
   const modalities = new Set();
   let hasImages = false;
@@ -1297,10 +1320,20 @@ function requestNeeds(body) {
   }
   if (hasImages) modalities.add('image');
   if (hasVideo) modalities.add('video');
+  // Inline image and video payloads are billed by resolution, not by character,
+  // so their base64 would swamp the estimate. Such requests are left
+  // unestimated (0) so no candidate is dropped on a number we cannot trust.
+  const estimatedTokens =
+    hasImages || hasVideo
+      ? 0
+      : estimateTokens(
+          JSON.stringify({ messages: body.messages || [], tools: body.tools || [] }),
+        ) + requestedOutputTokens(body);
   return {
     tools: Array.isArray(body.tools) && body.tools.length > 0,
     responseFormat: Boolean(body.response_format),
     modalities,
+    estimatedTokens,
   };
 }
 
@@ -1427,6 +1460,13 @@ function filterCandidates(configured, body, requestedModel) {
       skipped.push({ model: candidateKey(candidate), reason: 'missing requested capability' });
       continue;
     }
+    if (!fitsContext(model, needs)) {
+      skipped.push({
+        model: candidateKey(candidate),
+        reason: `request ~${needs.estimatedTokens} tokens exceeds model context ${model.context_length}`,
+      });
+      continue;
+    }
     const slots = registry.keySlots(candidate.provider);
     const remaining = slots.length
       ? Math.min(...slots.map((slot) => cooldownRemaining(candidate, slot)))
@@ -1445,10 +1485,8 @@ function filterCandidates(configured, body, requestedModel) {
   // turning a temporary cooldown into a hard outage.
   if (!active.length) {
     for (const candidate of configured) {
-      if (
-        candidateIsFree(candidate) &&
-        supportsRequest(candidateMetadata(candidate), needs)
-      ) {
+      const model = candidateMetadata(candidate);
+      if (candidateIsFree(candidate) && supportsRequest(model, needs) && fitsContext(model, needs)) {
         active.push(candidate);
       }
     }

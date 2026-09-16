@@ -9,6 +9,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   createProviderRegistry,
+  fitsContext,
   isChatModel,
   normalizeCatalogPayload,
   normalizeModelSlug,
@@ -163,6 +164,21 @@ assert.equal(googleCatalog.models[0].supported_parameters, undefined);
     supportsRequest({ architecture: { input_modalities: ['text'] } }, images),
     false,
   );
+}
+
+{
+  // Context pre-filter: a window holds input plus the requested output, and an
+  // unknown size on either side must keep the candidate rather than drop it.
+  const small = { context_length: 262144 };
+  const large = { context_length: 1048576 };
+  const need = { estimatedTokens: 272094 };
+  assert.equal(fitsContext(small, need), false);
+  assert.equal(fitsContext(large, need), true);
+  assert.equal(fitsContext({ context_length: 272094 }, need), true);
+  assert.equal(fitsContext({}, need), true);
+  assert.equal(fitsContext(null, need), true);
+  assert.equal(fitsContext(small, { estimatedTokens: 0 }), true);
+  assert.equal(fitsContext(small, {}), true);
 }
 
 const openaiCatalog = normalizeCatalogPayload({ data: [{ id: 'a' }, { nope: 1 }] });
